@@ -30,7 +30,7 @@ images.enemy.src = 'enemy.png';
 let currentSkin = 'default';
 const ownedSkins = { default: true };
 
-// Klavye durumları
+// Klavye ve Dokunmatik Durumları
 const keys = { left: false, right: false, up: false };
 
 // Kedi Nesnesi (55x55)
@@ -86,6 +86,8 @@ function startSelectedLevel(levelType) {
     gameLoop();
 }
 
+// ------------ KONTROL DİNLEYİCİLERİ ------------
+// 1. Klavye Dinleyicileri
 window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
@@ -99,6 +101,30 @@ window.addEventListener('keyup', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
 });
+
+// 2. Mobil Dokunmatik Kontrol Dinleyicileri
+const btnLeft = document.getElementById('btn-touch-left');
+const btnRight = document.getElementById('btn-touch-right');
+const btnJump = document.getElementById('btn-touch-jump');
+
+if (btnLeft && btnRight && btnJump) {
+    // Sol Buton
+    btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
+    btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
+
+    // Sağ Buton
+    btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
+    btnRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
+
+    // Zıplama Butonu
+    btnJump.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (cat.isGrounded) {
+            cat.velocityY = cat.jumpPower;
+            cat.isGrounded = false;
+        }
+    });
+}
 
 function generateNextPlatform() {
     const patternType = Math.floor(Math.random() * 3);
