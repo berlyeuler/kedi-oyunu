@@ -15,20 +15,27 @@ let elapsedTime = 0;
 let currentLevel = 1;
 
 // ------------ Görsel Resim Nesnelerini Yükleme ------------
-const skinsList = ['1', '2', '3', '4', '5'];
+const skinsList = ['foto1', 'foto2', 'foto3', 'foto4', 'foto5'];
 const images = { chest: new Image(), enemy: new Image() };
 
 skinsList.forEach(skin => {
-    images['foto' + skin] = new Image();
-    images['foto' + skin].src = 'foto' + skin + '.png';
+    images[skin] = new Image();
+    images[skin].src = skin + '.png';
 });
 
 images.chest.src = 'chest.png';
 images.enemy.src = 'enemy.png';
 
-// Kostüm Durumları
+// Kostüm Durumları (Resimdeki isimlerle birebir uyumlu: foto1 - foto5)
 let currentSkin = 'default';
-const ownedSkins = { default: true };
+const ownedSkins = {
+    default: true,
+    foto1: false,
+    foto2: false,
+    foto3: false,
+    foto4: false,
+    foto5: false
+};
 
 // Klavye ve Dokunmatik Durumları
 const keys = { left: false, right: false, up: false };
@@ -361,7 +368,8 @@ function draw() {
         }
     });
 
-    const activeCatImage = images['cat_' + currentSkin];
+    // Seçili kostümü (foto1.png - foto5.png) çizdirme
+    const activeCatImage = images[currentSkin];
     if (activeCatImage && activeCatImage.complete && activeCatImage.naturalWidth !== 0) {
         ctx.drawImage(activeCatImage, cat.x, cat.y, cat.width, cat.height);
     } else {
