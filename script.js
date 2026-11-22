@@ -15,7 +15,7 @@ let elapsedTime = 0;
 let currentLevel = 1;
 
 // ------------ Görsel Resim Nesnelerini Yükleme ------------
-const skinsList = ['1', '2', '3', '4', '5', 'superhero', 'king', 'detective', 'chef', 'dino', 'wizard', 'robot', 'angel'];
+const skinsList = ['1', '2', '3', '4', '5'];
 const images = { chest: new Image(), enemy: new Image() };
 
 skinsList.forEach(skin => {
