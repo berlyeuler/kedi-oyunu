@@ -34,7 +34,7 @@ images.foto4.src = 'foto4.png';
 images.foto5.src = 'foto5.png';
 
 // Kostüm Durumları (Hepsi ücretsiz ve açık)
-let currentSkin = 'foto1';
+let currentSkin = 'foto2';
 const ownedSkins = {
     default: true,
     foto1: true,
