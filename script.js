@@ -15,12 +15,12 @@ let elapsedTime = 0;
 let currentLevel = 1;
 
 // ------------ Görsel Resim Nesnelerini Yükleme ------------
-const skinsList = ['default', 'witch', 'pirate', 'ninja', 'astronaut', 'superhero', 'king', 'detective', 'chef', 'dino', 'wizard', 'robot', 'angel'];
+const skinsList = ['1', '2', '3', '4', '5', 'superhero', 'king', 'detective', 'chef', 'dino', 'wizard', 'robot', 'angel'];
 const images = { chest: new Image(), enemy: new Image() };
 
 skinsList.forEach(skin => {
-    images['cat_' + skin] = new Image();
-    images['cat_' + skin].src = 'cat_' + skin + '.jpg';
+    images['foto' + skin] = new Image();
+    images['foto' + skin].src = 'foto' + skin + '.png';
 });
 
 images.chest.src = 'chest.png';
