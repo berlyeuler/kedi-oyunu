@@ -14,48 +14,35 @@ let gameStartTime = Date.now();
 let elapsedTime = 0;
 let currentLevel = 1;
 
-// ------------ Görsel Resim Nesnelerini Yükleme ------------
-const skinsList = ['foto1', 'foto2', 'foto3', 'foto4', 'foto5'];
-const images = { chest: new Image(), enemy: new Image() };
-
-skinsList.forEach(skin => {
-    const img = new Image();
-    img.src = skin + '.png';
-    img.onload = () => {
-        console.log('Yüklendi:', img.src);
-    };
-    img.onerror = () => {
-        console.warn('Görsel yüklenemedi:', img.src);
-    };
-    images[skin] = img;
-});
+// ------------ Görsel Resim Nesnelerini Tek Tek Yükleme ------------
+const images = {
+    chest: new Image(),
+    enemy: new Image(),
+    foto1: new Image(),
+    foto2: new Image(),
+    foto3: new Image(),
+    foto4: new Image(),
+    foto5: new Image()
+};
 
 images.chest.src = 'chest.png';
 images.enemy.src = 'enemy.png';
+images.foto1.src = 'foto1.png';
+images.foto2.src = 'foto2.png';
+images.foto3.src = 'foto3.png';
+images.foto4.src = 'foto4.png';
+images.foto5.src = 'foto5.png';
 
-// Kostüm Durumları (foto1 - foto5)
+// Kostüm Durumları (Hepsi ücretsiz ve açık)
 let currentSkin = 'foto1';
 const ownedSkins = {
     default: true,
     foto1: true,
-    foto2: false,
-    foto3: false,
-    foto4: false,
-    foto5: false
+    foto2: true,
+    foto3: true,
+    foto4: true,
+    foto5: true
 };
-
-// Gelen kostüm anahtarını 'foto1'..'foto5' formatına normalize eder
-function normalizeSkinKey(skinKey) {
-    if (!skinKey) return currentSkin;
-    const str = String(skinKey).trim();
-    if (images[str]) return str;
-
-    const match = str.match(/(\d+)$/);
-    if (match && images['foto' + match[1]]) {
-        return 'foto' + match[1];
-    }
-    return str;
-}
 
 // Klavye ve Dokunmatik Durumları
 const keys = { left: false, right: false, up: false };
@@ -388,8 +375,14 @@ function draw() {
         }
     });
 
-    // Seçili kostümü çizdirme
-    const activeCatImage = images[currentSkin];
+    // Tek tek kostüm çizdirme
+    let activeCatImage = images.foto1;
+    if (currentSkin === 'foto1') activeCatImage = images.foto1;
+    else if (currentSkin === 'foto2') activeCatImage = images.foto2;
+    else if (currentSkin === 'foto3') activeCatImage = images.foto3;
+    else if (currentSkin === 'foto4') activeCatImage = images.foto4;
+    else if (currentSkin === 'foto5') activeCatImage = images.foto5;
+
     if (activeCatImage && activeCatImage.complete && activeCatImage.naturalWidth !== 0) {
         ctx.drawImage(activeCatImage, cat.x, cat.y, cat.width, cat.height);
     } else {
@@ -400,7 +393,7 @@ function draw() {
     ctx.restore();
 }
 
-// ------------ MAĞAZA MANTIĞI ------------
+// ------------ MAĞAZA MANTIĞI (PUAN GEREKTİRMEZ) ------------
 function toggleShop() {
     const shopModal = document.getElementById('shop-modal');
     shopModal.classList.toggle('hidden');
@@ -416,33 +409,30 @@ function toggleShop() {
 }
 
 function buyOrSelectSkin(skinKey, price) {
-    const normalizedKey = normalizeSkinKey(skinKey);
-
-    if (ownedSkins[normalizedKey]) {
-        selectSkin(normalizedKey);
-    } else if (score >= price) {
-        score -= price;
-        ownedSkins[normalizedKey] = true;
-        document.getElementById('score-text').innerText = score;
-        const btn = document.getElementById('btn-' + skinKey) || document.getElementById('btn-' + normalizedKey);
-        if (btn) btn.innerText = "Giydir";
-        selectSkin(normalizedKey);
-    } else {
-        alert("Yeterli puanın yok! 🐾 Soruları çözerek puan toplayabilirsin.");
-    }
+    selectSkin(skinKey);
 }
 
 function selectSkin(skinKey) {
-    const normalizedKey = normalizeSkinKey(skinKey);
-    const targetImg = images[normalizedKey];
+    const key = String(skinKey).trim();
 
-    if (targetImg && targetImg.complete && targetImg.naturalWidth !== 0) {
-        currentSkin = normalizedKey;
-        alert("Kostüm giydirildi! 🐾");
+    if (key === 'foto1' || key === '1' || key.endsWith('1')) {
+        currentSkin = 'foto1';
+    } else if (key === 'foto2' || key === '2' || key.endsWith('2')) {
+        currentSkin = 'foto2';
+    } else if (key === 'foto3' || key === '3' || key.endsWith('3')) {
+        currentSkin = 'foto3';
+    } else if (key === 'foto4' || key === '4' || key.endsWith('4')) {
+        currentSkin = 'foto4';
+    } else if (key === 'foto5' || key === '5' || key.endsWith('5')) {
+        currentSkin = 'foto5';
     } else {
-        console.warn("Bu kostümün resmi henüz yüklenemedi:", normalizedKey, targetImg ? targetImg.src : "");
-        alert("Bu kostümün görseli bulunamadı (" + normalizedKey + ".png).");
+        currentSkin = 'foto1';
     }
+
+    const btn = document.getElementById('btn-' + skinKey) || document.getElementById('btn-' + currentSkin);
+    if (btn) btn.innerText = "Giydirildi";
+
+    alert("Kostüm giydirildi (" + currentSkin + ")! 🐾");
 }
 
 // ------------ SESLENDİRME ------------
