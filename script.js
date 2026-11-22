@@ -19,18 +19,25 @@ const skinsList = ['foto1', 'foto2', 'foto3', 'foto4', 'foto5'];
 const images = { chest: new Image(), enemy: new Image() };
 
 skinsList.forEach(skin => {
-    images[skin] = new Image();
-    images[skin].src = skin + '.png';
+    const img = new Image();
+    img.src = skin + '.png';
+    img.onload = () => {
+        console.log('Yüklendi:', img.src);
+    };
+    img.onerror = () => {
+        console.warn('Görsel yüklenemedi (dosya adı/yolu kontrol edilmeli):', img.src);
+    };
+    images[skin] = img;
 });
 
 images.chest.src = 'chest.png';
 images.enemy.src = 'enemy.png';
 
-// Kostüm Durumları (Resimdeki isimlerle birebir uyumlu: foto1 - foto5)
-let currentSkin = 'default';
+// Kostüm Durumları (foto1 - foto5)
+let currentSkin = 'foto1';
 const ownedSkins = {
     default: true,
-    foto1: false,
+    foto1: true,
     foto2: false,
     foto3: false,
     foto4: false,
@@ -368,7 +375,7 @@ function draw() {
         }
     });
 
-    // Seçili kostümü (foto1.png - foto5.png) çizdirme
+    // Seçili kostümü çizdirme
     const activeCatImage = images[currentSkin];
     if (activeCatImage && activeCatImage.complete && activeCatImage.naturalWidth !== 0) {
         ctx.drawImage(activeCatImage, cat.x, cat.y, cat.width, cat.height);
