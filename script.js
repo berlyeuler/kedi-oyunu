@@ -25,7 +25,7 @@ skinsList.forEach(skin => {
         console.log('Yüklendi:', img.src);
     };
     img.onerror = () => {
-        console.warn('Görsel yüklenemedi (dosya adı/yolu kontrol edilmeli):', img.src);
+        console.warn('Görsel yüklenemedi:', img.src);
     };
     images[skin] = img;
 });
@@ -43,6 +43,19 @@ const ownedSkins = {
     foto4: false,
     foto5: false
 };
+
+// Gelen kostüm anahtarını 'foto1'..'foto5' formatına normalize eder
+function normalizeSkinKey(skinKey) {
+    if (!skinKey) return currentSkin;
+    const str = String(skinKey).trim();
+    if (images[str]) return str;
+
+    const match = str.match(/(\d+)$/);
+    if (match && images['foto' + match[1]]) {
+        return 'foto' + match[1];
+    }
+    return str;
+}
 
 // Klavye ve Dokunmatik Durumları
 const keys = { left: false, right: false, up: false };
@@ -403,23 +416,33 @@ function toggleShop() {
 }
 
 function buyOrSelectSkin(skinKey, price) {
-    if (ownedSkins[skinKey]) {
-        selectSkin(skinKey);
+    const normalizedKey = normalizeSkinKey(skinKey);
+
+    if (ownedSkins[normalizedKey]) {
+        selectSkin(normalizedKey);
     } else if (score >= price) {
         score -= price;
-        ownedSkins[skinKey] = true;
+        ownedSkins[normalizedKey] = true;
         document.getElementById('score-text').innerText = score;
-        const btn = document.getElementById('btn-' + skinKey);
+        const btn = document.getElementById('btn-' + skinKey) || document.getElementById('btn-' + normalizedKey);
         if (btn) btn.innerText = "Giydir";
-        selectSkin(skinKey);
+        selectSkin(normalizedKey);
     } else {
         alert("Yeterli puanın yok! 🐾 Soruları çözerek puan toplayabilirsin.");
     }
 }
 
 function selectSkin(skinKey) {
-    currentSkin = skinKey;
-    alert("Kostüm giydirildi! 🐾");
+    const normalizedKey = normalizeSkinKey(skinKey);
+    const targetImg = images[normalizedKey];
+
+    if (targetImg && targetImg.complete && targetImg.naturalWidth !== 0) {
+        currentSkin = normalizedKey;
+        alert("Kostüm giydirildi! 🐾");
+    } else {
+        console.warn("Bu kostümün resmi henüz yüklenemedi:", normalizedKey, targetImg ? targetImg.src : "");
+        alert("Bu kostümün görseli bulunamadı (" + normalizedKey + ".png).");
+    }
 }
 
 // ------------ SESLENDİRME ------------
